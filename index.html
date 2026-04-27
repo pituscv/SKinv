@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio Overview</title>
+  <style>
+:root {
+    --bg0: #061325;
+    --bg1: #0A1E35;
+    --panel0: #0B1A2F;
+    --panel1: #0E223C;
+    --border: rgba(255, 255, 255, 0.06);
+    --border2: rgba(255, 255, 255, 0.09);
+    --text: #EAF2FF;
+    --muted: rgba(234, 242, 255, 0.70);
+    --muted2: rgba(234, 242, 255, 0.55);
+    --accent: #42D9C8;
+    --shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    --shadow2: 0 10px 25px rgba(0, 0, 0, 0.24);
+    --radius: 14px;
+}
+* { box-sizing: border-box }
+html, body { height: 100% }
+body {
+    margin: 0;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    color: var(--text);
+    background: radial-gradient(900px 420px at 20% 0%, rgba(66,217,200,0.12), transparent 60%), linear-gradient(160deg, var(--bg0), var(--bg1));
+}
+.app { max-width: 1700px; margin: 0 auto; padding: 22px 18px 34px; }
+.topbar { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 18px 18px; border: 1px solid var(--border); background: linear-gradient(180deg, rgba(14,34,60,0.70), rgba(11,26,47,0.70)); border-radius: calc(var(--radius) + 2px); box-shadow: var(--shadow); position: sticky; top: 10px; z-index: 10; backdrop-filter: blur(10px); }
+.title { font-size: 18px; font-weight: 700; letter-spacing: 0.2px; }
+.subtitle { margin-top: 6px; font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+.btn { appearance: none; border: 1px solid var(--border2); background: linear-gradient(180deg, rgba(66,217,200,0.10), rgba(66,217,200,0.04)); color: var(--text); padding: 10px 12px; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow2); transition: transform .08s ease, border-color .12s ease, background .12s ease; }
+.btn:hover { border-color: rgba(66,217,200,0.35) }
+.btn:active { transform: translateY(1px) }
+.btn--ghost { background: rgba(255,255,255,0.03); }
+.btn--icon { width: 42px; height: 42px; padding: 0; display: grid; place-items: center; font-size: 22px; line-height: 1; }
+.tabs { display: flex; gap: 10px; margin: 14px 6px 16px; flex-wrap: wrap; }
+.tab { border: 1px solid var(--border); background: rgba(11,26,47,0.55); color: var(--muted); padding: 10px 12px; border-radius: 999px; cursor: pointer; transition: background .12s ease, color .12s ease, border-color .12s ease, opacity .12s ease; }
+.tab.is-active { color: var(--text); border-color: rgba(66,217,200,0.34); background: rgba(66,217,200,0.12); }
+.tab--detail[aria-disabled="true"] { opacity: .55; }
+.content { display: block }
+.tabpane { display: none }
+.tabpane.is-active { display: block }
+.kpi-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 0 6px 12px; }
+.card { border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, rgba(14,34,60,0.78), rgba(11,26,47,0.78)); box-shadow: var(--shadow2); overflow: hidden; }
+.card__inner { padding: 14px 14px 12px; }
+.card__label { font-size: 12px; color: var(--muted); letter-spacing: 0.2px; line-height: 1.2; }
+.card__value { margin-top: 10px; font-size: 24px; font-weight: 750; letter-spacing: 0.2px; }
+.panel { margin: 0 6px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(11,26,47,0.66); box-shadow: var(--shadow2); }
+.panel__head { padding: 14px 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.panel__head--split { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+.panel__title { font-size: 14px; font-weight: 850; letter-spacing: 0.6px; text-transform: uppercase; }
+.panel__hint { margin-top: 8px; font-size: 12px; color: var(--muted2); }
+.panel__body { padding: 14px; }
+.mid { display: grid; grid-template-columns: 1.7fr 0.7fr; gap: 12px; margin: 0 0 12px; }
+@media (max-width:1200px) { .mid { grid-template-columns: 1fr; } .kpi-row { grid-template-columns: repeat(2, 1fr); } }
+.impact .panel { height: 100% }
+.impact__tiles { display: flex; flex-direction: column; gap: 10px; }
+.impact-tile { border: 1px solid var(--border); border-radius: var(--radius); background: linear-gradient(180deg, rgba(14,34,60,0.65), rgba(11,26,47,0.65)); padding: 12px 12px; position: relative; overflow: hidden; }
+.impact-tile:before { content: ""; position: absolute; inset: -1px; background: radial-gradient(220px 120px at 10% 0%, rgba(66,217,200,0.20), transparent 70%); opacity: .65; pointer-events: none; }
+.impact-tile__label { position: relative; font-size: 12px; color: var(--muted); line-height: 1.2; }
+.impact-tile__value { position: relative; margin-top: 8px; font-size: 20px; font-weight: 750; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 5px 10px; border-radius: 999px; border: 1px solid var(--border2); background: rgba(255,255,255,0.02); color: rgba(234,242,255,0.86); white-space: nowrap; }
+.pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(66,217,200,0.12); }
+.dot.sep { margin: 0 10px; opacity: .5; }
+.muted { color: var(--muted2) }
+.matrix { width: 100%; border-collapse: separate; border-spacing: 0; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius); background: rgba(14,34,60,0.35); }
+.matrix th, .matrix td { padding: 0; border-bottom: 1px solid rgba(255,255,255,0.025); border-right: 1px solid rgba(255,255,255,0.025); font-size: 11px; }
+.matrix th { background: rgba(255,255,255,0.03); color: var(--muted); font-weight: 750; text-align: right; }
+.matrix th:first-child { text-align: left; }
+.matrix tr:last-child td, .matrix tr:last-child th { border-bottom: none; }
+.matrix td:last-child, .matrix th:last-child { border-right: none; }
+.matrix .rowhdr { text-align: left; color: rgba(234,242,255,0.86); font-weight: 800; }
+.matrix .superhdr { text-align: center !important; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; color: rgba(234,242,255,0.80); font-size: 11px !important; }
+.matrix td { position: relative; overflow: hidden; color: var(--text); min-width: 56px; height: 30px; text-align: center; }
+.table-wrap { overflow: auto; }
+.table { width: 100%; min-width: 700px; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; background: rgba(14,34,60,0.25); }
+.table thead th { position: sticky; top: 0; background: rgba(6,19,37,0.95); backdrop-filter: blur(8px); color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: 0.35px; text-align: left; padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); white-space: normal; text-transform: uppercase; }
+.table tbody td { padding: 10px 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(234,242,255,0.92); font-size: 12px; vertical-align: middle; white-space: nowrap; }
+.table tbody tr:hover td { background: rgba(66,217,200,0.06); }
+.table tbody tr:last-child td { border-bottom: none }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+.table tbody tr { cursor: pointer; }
+.riskCell, .upsideCell { position: relative; overflow: hidden; }
+.riskCell::before { content: ""; position: absolute; inset: 6px; border-radius: 10px; background: linear-gradient(90deg, rgba(255,80,80,calc(var(--i,0)*0.10)), rgba(255,80,80,calc(var(--i,0)*0.30))); box-shadow: inset 0 0 0 1px rgba(255,80,80,calc(var(--i,0)*0.22)); pointer-events: none; }
+.upsideCell::before { content: ""; position: absolute; inset: 6px; border-radius: 10px; background: linear-gradient(90deg, rgba(66,217,200,calc(var(--i,0)*0.10)), rgba(66,217,200,calc(var(--i,0)*0.30))); box-shadow: inset 0 0 0 1px rgba(66,217,200,calc(var(--i,0)*0.22)); pointer-events: none; }
+.riskCell>*, .upsideCell>* { position: relative; z-index: 1 }
+.thWrap { display: flex; flex-direction: column; gap: 2px; }
+.thTop { line-height: 1.05; }
+.thSub { line-height: 1.05; font-size: 10px; color: rgba(234,242,255,0.55); font-weight: 800; text-transform: none; letter-spacing: 0.2px; }
+.filters { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.select, .input { border: 1px solid var(--border2); background: rgba(6,19,37,0.55); color: var(--text); padding: 10px 10px; border-radius: 12px; outline: none; }
+.select { min-width: 180px } .input { min-width: 220px }
+.select:focus, .input:focus { border-color: rgba(66,217,200,0.35) }
+.footnote { margin-top: 10px; color: var(--muted2); font-size: 12px; }
+.detailActions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.detailShell { padding: 6px 8px 14px; }
+.detailHeaderLarge { display: flex; flex-direction: column; gap: 14px; }
+.detailGrid2 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 12px; align-items: stretch; margin-top: 12px; }
+@media (max-width:980px) { .detailGrid2 { grid-template-columns: 1fr; } }
+.detailCard { border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; background: rgba(14,34,60,0.25); box-shadow: var(--shadow2); overflow: hidden; display: flex; flex-direction: column; }
+.detailCardHead { padding: 14px 14px 10px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.detailCardTitle { font-size: 13px; font-weight: 900; letter-spacing: .4px; }
+.detailCardBody { padding: 14px; flex: 1; }
+.chartWrap { width: 100%; }
+.chartSvg { width: 100%; height: 380px; display: block; }
+.chartAxisText { fill: rgba(234,242,255,0.55); font-size: 11px; font-weight: 700; }
+.chartGrid { stroke: rgba(255,255,255,0.08); stroke-width: 1; }
+.chartLineCur { stroke: rgba(234,242,255,0.50); stroke-width: 2; fill: none; stroke-dasharray: 6 5; }
+.chartLineSel { stroke: rgba(66,217,200,0.95); stroke-width: 3; fill: none; }
+.chartLegend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+.legendItem { display: flex; align-items: center; gap: 8px; font-size: 12px; color: rgba(234,242,255,0.86); }
+.legendSwatch { width: 26px; height: 4px; border-radius: 999px; }
+.legendSwatch.cur { background: rgba(234,242,255,0.50); }
+.legendSwatch.sel { background: rgba(66,217,200,0.95); }
+.detailTbl { width: 100%; border-collapse: collapse; border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.08); }
+.detailTbl th, .detailTbl td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 13px; }
+.detailTbl th { text-align: left; color: rgba(234,242,255,0.75); font-weight: 900; background: rgba(6,19,37,0.65); }
+.detailTbl td { color: rgba(234,242,255,0.92); background: rgba(14,34,60,0.18); }
+.detailTbl tr:last-child th, .detailTbl tr:last-child td { border-bottom: none; }
+.detailKpiRow { display: flex; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+.detailKpiLabel { color: rgba(234,242,255,0.70); font-weight: 900; font-size: 14px; }
+.detailKpiVal { font-weight: 950; font-size: 18px; }
+.detailScenarioPill { display: inline-flex; flex-direction: row; align-items: center; gap: 12px; padding: 14px 16px; min-width: 280px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); background: linear-gradient(180deg, rgba(14,34,60,0.45), rgba(11,26,47,0.45)); box-shadow: 0 6px 18px rgba(0,0,0,0.25) inset, 0 6px 18px rgba(0,0,0,0.12); }
+.detailScenarioPill__label { font-size: 12px; font-weight: 900; color: rgba(234,242,255,0.74); text-transform: uppercase; letter-spacing: .35px; white-space: nowrap; }
+.detailScenarioPill__select { -webkit-appearance: none; appearance: none; border: 1px solid rgba(255,255,255,0.06); background: rgba(6,19,37,0.55); color: rgba(234,242,255,0.95); padding: 9px 36px 9px 12px; border-radius: 10px; outline: none; font-weight: 800; font-size: 13px; cursor: pointer; min-width: 180px; background-image: linear-gradient(45deg, transparent 50%, rgba(234,242,255,0.75) 50%), linear-gradient(135deg, rgba(234,242,255,0.75) 50%, transparent 50%); background-position: calc(100% - 18px) 50%, calc(100% - 12px) 50%; background-size: 6px 6px, 6px 6px; background-repeat: no-repeat; }
+.detailScenarioPill__select:focus { border-color: rgba(66,217,200,0.45); }
+#tab-products .table-wrap { overflow-x: hidden; overflow-y: auto; }
+#productsTable { min-width: 0; width: 100%; table-layout: fixed; }
+#productsTable thead th { white-space: normal; line-height: 1.15; padding: 12px 10px; font-size: 11px; }
+#productsTable tbody td { padding: 12px 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#productsTable tbody td:first-child { font-weight: 750; color: rgba(234,242,255,0.96); }
+#productsTable tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.detailHeaderLarge--kpi { padding: 22px 28px 24px; border-radius: 24px; background: radial-gradient(1200px 500px at 0% 0%, rgba(88,120,255,0.08), transparent 45%), linear-gradient(180deg, rgba(9,18,38,0.96), rgba(6,16,34,0.96)); border: 1px solid rgba(255,255,255,0.06); box-shadow: 0 12px 30px rgba(0,0,0,0.25); }
+.detailTopBar { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.detailTopBarLeft { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.detailBackBtn { appearance: none; border: none; background: transparent; color: rgba(234,242,255,0.78); font-size: 14px; font-weight: 700; padding: 0; cursor: pointer; }
+.detailBackBtn:hover { color: #fff; }
+.detailProductName { font-size: 25px; line-height: 1.02; font-weight: 900; letter-spacing: -1.4px; color: #fff; }
+.detailHeroStats { display: grid; grid-template-columns: 0.7fr 1px 1fr 1px 1fr 1px 1fr; align-items: stretch; gap: 0; border-radius: 20px; }
+.heroDivider { width: 1px; background: rgba(255,255,255,0.10); margin: 4px 0; }
+.heroStat { padding: 18px 28px 16px; min-width: 0; }
+.heroStat__label { font-size: 14px; line-height: 1.2; font-weight: 700; color: rgba(234,242,255,0.72); margin-bottom: 14px; }
+.heroStat__big { font-size: 23px; line-height: 0.98; font-weight: 900; letter-spacing: -1.2px; color: #fff; margin-bottom: 12px; }
+.heroStat__big--purple { color: #9f7cff; }
+.heroStat__sub { font-size: 14px; line-height: 1.25; font-weight: 700; color: rgba(234,242,255,0.72); }
+.heroStat__price { font-size: 12px; font-weight: 700; color: rgba(234,242,255,0.65); margin-top: 2px; }
+.markupRotCell { position: relative; z-index: 0; }
+.markupRotCell::before { content: ""; position: absolute; inset: 4px; border-radius: 10px; z-index: 0; background: linear-gradient(90deg, rgba(239,68,68,calc((1 - var(--i,0)) * 0.45)), rgba(250,204,21,calc(var(--i,0) * 0.28)), rgba(34,197,94,calc(var(--i,0) * 0.50))); pointer-events: none; }
+.markupRotCell>* { position: relative; z-index: 2; }
+
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar__left">
+      <div class="title">Portfolio Overview</div>
+      <div class="subtitle">Recommended actions based on demand, elasticity, and inventory signals &middot; As of day 60</div>
+    </div>
+    <div class="topbar__right">
+      <button id="btnReset" class="btn">Reset</button>
+    </div>
+  </header>
+  <nav class="tabs">
+    <button class="tab is-active" data-tab="overview">Portfolio / Overview</button>
+    <button class="tab" data-tab="products">Product List</button>
+    <button class="tab tab--detail" data-tab="detail" aria-disabled="true">Product Detail</button>
+  </nav>
+  <main class="content">
+    <section id="tab-overview" class="tabpane is-active">
+      <div id="kpiRow" class="kpi-row"></div>
+      <div class="mid">
+        <section class="panel">
+          <div class="panel__head">
+            <div class="panel__title">Transition Matrix (SKU Count)</div>
+            <div class="panel__hint">
+              <span class="muted">Rows:</span> Proposed strategy
+              <span class="dot sep">&bull;</span>
+              <span class="muted">Columns:</span> Current price level
+            </div>
+          </div>
+          <div id="matrixWrap" class="panel__body" style="overflow:auto"></div>
+        </section>
+        <aside class="impact">
+          <div class="panel">
+            <div class="panel__head"><div class="panel__title">Season status</div></div>
+            <div id="impactTiles" class="panel__body impact__tiles"></div>
+          </div>
+        </aside>
+      </div>
+      <section class="panel">
+        <div class="panel__head"><div class="panel__title">&#9660; Markdown Actions</div></div>
+        <div class="panel__body">
+          <div class="table-wrap"><table class="table" id="markdownTable"></table></div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel__head"><div class="panel__title">&#9650; Markup Opportunities</div></div>
+        <div class="panel__body">
+          <div class="table-wrap"><table class="table" id="markupTable"></table></div>
+        </div>
+      </section>
+    </section>
+    <section id="tab-products" class="tabpane">
+      <section class="panel">
+        <div class="panel__head panel__head--split">
+          <div>
+            <div class="panel__title">Product List</div>
+            <div class="panel__hint">Click any row to open Product Detail.</div>
+          </div>
+          <div class="filters">
+            <select id="fType" class="select">
+              <option value="">All types</option>
+              <option value="markup">Markup</option>
+              <option value="markdown">Markdown</option>
+            </select>
+            <input id="fSearch" class="input" type="search" placeholder="Search SKU / name..." />
+          </div>
+        </div>
+        <div class="panel__body">
+          <div class="table-wrap"><table class="table" id="productsTable"></table></div>
+          <div class="footnote" id="productsMeta"></div>
+        </div>
+      </section>
+    </section>
+    <section id="tab-detail" class="tabpane">
+      <section class="panel">
+        <div class="panel__head panel__head--split">
+          <div><div class="panel__title">Product Detail</div></div>
+          <div class="detailActions">
+            <button id="btnDetailBack" class="btn btn--ghost">Back to Product List</button>
+            <button id="btnDetailClose" class="btn btn--icon">&times;</button>
+          </div>
+        </div>
+        <div class="panel__body">
+          <div id="productDetailMount"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+</div>
+<script>
+
+
+// ============================================================
+//  PORTFOLIO OVERVIEW  – JS v3
+//  Data source: Demo_Claude_v2.xlsx
+// ============================================================
+
+const qs  = (s, el=document) => el.querySelector(s);
+const qsa = (s, el=document) => [...el.querySelectorAll(s)];
+function clamp(n,a,b){ return Math.max(a,Math.min(b,n)); }
+function fmtInt(x){ if(x==null||isNaN(+x))return"—"; return Math.round(+x).toLocaleString("en-US"); }
+
+function fmtEUR(x){
+  if(x==null||isNaN(+x))return"—";
+  return (+x).toLocaleString("en-US",{
+    style:"currency",
+    currency:"EUR",
+    minimumFractionDigits:1,
+    maximumFractionDigits:1
+  });
+}
+function fmtPct(x){ if(x==null||isNaN(+x))return"—"; return`${(+x*100).toFixed(1)}%`; }
+function fmtMult(x){ if(x==null||isNaN(+x))return"—"; return`${(+x).toFixed(2)}×`; }
+function fmtPctFromMult(x){ if(x==null||isNaN(+x))return"—"; return`${Math.round((+x)*100)}%`; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+
+function formatRecoChip(reco){
+  const palette = {
+    "Markdown -10%": { bg:"rgba(147,112,219,0.15)", border:"rgba(147,112,219,0.50)", text:"#c9a8ff" },
+    "Markdown -20%": { bg:"rgba(99,102,241,0.15)",  border:"rgba(99,102,241,0.50)",  text:"#a5b4fc" },
+    "Markdown -30%": { bg:"rgba(59,130,246,0.15)",  border:"rgba(59,130,246,0.50)",  text:"#93c5fd" },
+"Mark-up +10%":  { bg:"rgba(20,184,166,0.15)",  border:"rgba(20,184,166,0.50)",  text:"#5eead4" },
+"Mark-up +20%":  { bg:"rgba(59,130,246,0.15)",  border:"rgba(59,130,246,0.50)",  text:"#93c5fd" },
+"Mark-up +30%":  { bg:"rgba(168,85,247,0.15)",  border:"rgba(168,85,247,0.50)",  text:"#d8b4fe" },
+  };
+  const c=palette[reco]||{bg:"rgba(255,255,255,0.06)",border:"rgba(255,255,255,0.20)",text:"rgba(234,242,255,0.80)"};
+  return `<span style="display:inline-block;padding:3px 10px;border-radius:999px;border:1px solid ${c.border};background:${c.bg};color:${c.text};font-size:11px;font-weight:800;letter-spacing:0.3px;white-space:nowrap;">${esc(reco)}</span>`;
+}
+
+// ── DATA ──────────────────────────────────────────────────
+const MATRIX = {
+  cols: ["-60%","-50%","-40%","-30%","-20%","-10%","0%","+10%","+20%","+30%","+40%","+50%","+60%"],
+  rows: ["-60%","-50%","-40%","-30%","-20%","-10%","0%","+10%","+20%","+30%","+40%","+50%","+60%"],
+  values: [
+    [ 17, 24, 19,  5,  0,  0,     0,  0,  0,  0,  0,  0,  0],
+    [  0, 81, 39, 32,  0,  0,     0,  0,  0,  0,  0,  0,  0],
+    [  0,  0,115,104, 51, 21,     0,  0,  0,  0,  0,  0,  0],
+    [  0,  0,  0,192,112,102,    25,  0,  0,  0,  0,  0,  0],
+    [  0,  0,  0,  0,357,280,   312,  0,  0,  0,  0,  0,  0],
+    [  0,  0,  0,  0,  0,492,   675,  0,  0,  0,  0,  0,  0],
+    [  0,  0,  0,  0,  0,  0, 24352,  0,  0,  0,  0,  0,  0],
+    [  0,  0,  0,  0,  0,  0,   371, 55,  0,  0,  0,  0,  0],
+    [  0,  0,  0,  0,  0,  0,   172, 22,372,  0,  0,  0,  0],
+    [  0,  0,  0,  0,  0,  0,    14, 12, 83,105,  0,  0,  0],
+    [  0,  0,  0,  0,  0,  0,     0,  6, 55, 24, 41,  0,  0],
+    [  0,  0,  0,  0,  0,  0,     0,  0,  0, 13, 14, 16,  0],
+    [  0,  0,  0,  0,  0,  0,     0,  0,  0,  0,  5,  1,  2],
+  ]
+};
+
+
+const MARKDOWN_LIST = [
+
+  { sku:"AT-93847", name:"Active Training T-Shirt",    curr:22.4, comp:20.9, pct_comp:0.07, inv_risk_pct:0.20, reco:"Markdown -10%", final_price:19.90, uplift:0.30, obsolete:0.00, rev_uplift:75062, margin_up:37430 },
+
+  { sku:"HL-80426", name:"High-Waist Leggings",        curr:48.60, comp:46.10, pct_comp:0.05, inv_risk_pct:0.16, reco:"Markdown -10%", final_price:43.90, uplift:0.22, obsolete:0.04, rev_uplift:56800, margin_up:18900 },
+  { sku:"TJ-46813", name:"Thermal Sports Jacket",      curr:84.70, comp:80.00, pct_comp:0.06, inv_risk_pct:0.18, reco:"Markdown -20%", final_price:67.90, uplift:0.25, obsolete:0.05, rev_uplift:53900, margin_up:17900 },
+  { sku:"RJ-29573", name:"Breathable Running Jacket",  curr:74.60, comp:71.00, pct_comp:0.05, inv_risk_pct:0.11, reco:"Markdown -30%", final_price:52.90, uplift:0.32, obsolete:0.03, rev_uplift:40200, margin_up:14600 },
+  { sku:"CT-19034", name:"Compression Tights",         curr:51.80, comp:48.00, pct_comp:0.08, inv_risk_pct:0.15, reco:"Markdown -10%", final_price:46.90, uplift:0.19, obsolete:0.04, rev_uplift:38900, margin_up:13700 },
+  { sku:"SB-48392", name:"Medium Support Sports Bra",  curr:31.60, comp:32.00, pct_comp:-0.01, inv_risk_pct:0.10, reco:"Markdown -10%", final_price:28.90, uplift:0.16, obsolete:0.03, rev_uplift:33500, margin_up:11700 },
+  { sku:"ST-35780", name:"Sleeveless Training Top",    curr:24.60, comp:22.50, pct_comp:0.09, inv_risk_pct:0.14, reco:"Markdown -20%", final_price:19.90, uplift:0.20, obsolete:0.04, rev_uplift:30600, margin_up:10800 },
+  { sku:"FC-51297", name:"Fitness Crop Top",           curr:27.70, comp:25.60, pct_comp:0.08, inv_risk_pct:0.13, reco:"Markdown -10%", final_price:24.90, uplift:0.21, obsolete:0.04, rev_uplift:30200, margin_up:10400 },
+];
+
+const MARKUP_LIST = [
+
+  { sku:"TP-92614", name:"Athletic Track Pants",       curr:54.5, comp:67.9, pct_comp:-0.198, rot:1.77, reco:"Mark-up +20%", final_price:65.9, rev_uplift:151668, margin_up:151668 },
+
+  { sku:"RS-71058", name:"Basic Running Shoes",        curr:88.9, comp:98.9, pct_comp:-0.07, rot:1.55, reco:"Mark-up +10%", final_price:97.9, rev_uplift:29300, margin_up:29300 },
+  { sku:"PR-57291", name:"Performance Running Shorts", curr:32.9, comp:39.9, pct_comp:-0.10, rot:1.63, reco:"Mark-up +20%", final_price:39.9, rev_uplift:24000, margin_up:24000 },
+  { sku:"WJ-64821", name:"Windbreaker Jacket",         curr:64.7, comp:72.9, pct_comp:-0.11, rot:1.57, reco:"Mark-up +10%", final_price:71.9, rev_uplift:22400, margin_up:22400 },
+  { sku:"LH-66109", name:"Lightweight Sports Hoodie",  curr:58.9, comp:65.9, pct_comp:-0.09, rot:1.60, reco:"Mark-up +10%", final_price:64.9, rev_uplift:21500, margin_up:21500 },
+  { sku:"PP-77465", name:"Performance Polo Shirt",     curr:39.6, comp:44.9, pct_comp:-0.10, rot:1.70, reco:"Mark-up +20%", final_price:43.9, rev_uplift:19800, margin_up:19800 },
+  { sku:"CS-83920", name:"Compression Shorts",         curr:24.6, comp:34.9, pct_comp:-0.16, rot:1.83, reco:"Mark-up +30%", final_price:32.9, rev_uplift:18900, margin_up:18900 },
+];
+
+
+const MD_DETAIL = {
+  sku:"AT-93847", name:"Active Training T-Shirt",
+  elasticity:"High", curr_price:22.4, comp_price:20.9, curr_index_vs_comp:0.07,
+  units:22400, cost:8.40,
+
+  scenarioCurrent:{ inv_units:537600, inv_eur:12042240, revenue:381338, cost:150528, margin:230810 },
+
+  scenarios:{
+    /*BARRA*/
+    md10:{ label:"Markdown -10% (Recommended)", price:19.90, inv_units:0, inv_eur:0, revenue:456400, cost:188160, margin:286240, margin_uplift:37430,  proposed_index:-0.05  },
+
+    md20:{ label:"Markdown -20%",               price:17.92, inv_units:0,    inv_eur:0,     revenue:420475, cost:188160, margin:232315, margin_uplift:1505,   proposed_index:-0.14 },
+    md30:{ label:"Markdown -30%",               price:15.68, inv_units:0,    inv_eur:0,     revenue:379832, cost:188160, margin:191672, margin_uplift:-39137, proposed_index:-0.25 },
+  },
+  series:[
+    {d:0,  cur:100,md10:100, md20:100, md30:100},{d:5,  cur:98, md10:98,  md20:98,  md30:98},
+    {d:10, cur:96, md10:96,  md20:96,  md30:96}, {d:15, cur:94, md10:94,  md20:94,  md30:94},
+    {d:20, cur:92, md10:92,  md20:92,  md30:92}, {d:25, cur:90, md10:90,  md20:90,  md30:90},
+    {d:30, cur:88, md10:88,  md20:88,  md30:88}, {d:35, cur:86, md10:86,  md20:86,  md30:86},
+    {d:40, cur:84, md10:84,  md20:84,  md30:84}, {d:45, cur:83, md10:83,  md20:83,  md30:83},
+    {d:50, cur:82, md10:82,  md20:82,  md30:82}, {d:55, cur:81, md10:81,  md20:81,  md30:81},
+    {d:60, cur:81, md10:81,  md20:81,  md30:81}, {d:65, cur:77, md10:75.8,md20:73.8,md30:68.2},
+    {d:70, cur:75, md10:73.2,md20:70.2,md30:61.8},{d:75,cur:73, md10:70.6,md20:66.6,md30:55.4},
+    {d:80, cur:72, md10:69.3,md20:64.8,md30:52.2},{d:85,cur:70, md10:66.7,md20:61.2,md30:45.8},
+    {d:90, cur:68, md10:64.1,md20:57.6,md30:39.4},{d:95,cur:67, md10:62.8,md20:55.8,md30:36.2},
+    {d:100,cur:58, md10:51.1,md20:39.6,md30:7.4}, {d:105,cur:57,md10:49.8,md20:37.8,md30:4.2},
+    {d:110,cur:56, md10:48.5,md20:36.0,md30:1.0}, {d:115,cur:55,md10:47.2,md20:34.2,md30:0},
+    {d:120,cur:55, md10:47.2,md20:34.2,md30:0},   {d:125,cur:54,md10:45.9,md20:32.4,md30:0},
+    {d:130,cur:47, md10:36.8,md20:19.8,md30:0},   {d:135,cur:41,md10:29.0,md20:9.0, md30:0},
+    {d:140,cur:39, md10:26.4,md20:5.4, md30:0},   {d:145,cur:37,md10:23.8,md20:1.8, md30:0},
+    {d:150,cur:36, md10:22.5,md20:0,   md30:0},   {d:155,cur:35,md10:21.2,md20:0,   md30:0},
+    {d:160,cur:30, md10:13,md20:0,   md30:0},   {d:165,cur:28,md10:8,md20:0,   md30:0},
+    {d:170,cur:26, md10:4, md20:0,   md30:0},   {d:175,cur:25,md10:2, md20:0,   md30:0},
+    {d:180,cur:24, md10:0, md20:0,   md30:0},
+  ]
+};
+
+const MU_DETAIL = {
+  sku:"TP-92614", name:"Athletic Track Pants",
+  elasticity:"High", curr_price:54.45, comp_price:67.9, curr_index_vs_comp:-0.198,
+  units:13200, cost:28.314,
+
+  scenarioCurrent:{ inv_units:0, inv_eur:0, revenue:718740, cost:373745, margin:344995 },
+  
+  scenarios:{
+    mu10:{ label:"Mark-up +10%",               price:59.90, inv_units:0,    inv_eur:0,     revenue:790614, cost:373745, margin:416869, margin_uplift:71874,  proposed_index:-0.12 },
+
+    mu20:{ label:"Mark-up +20% (Recommended)", price:65.9, inv_units:0,  inv_eur:0, revenue:870408, cost:373745, margin:496663, margin_uplift:151668, proposed_index:-0.03 },
+
+    mu30:{ label:"Mark-up +30%",               price:70.79, inv_units:1320, inv_eur:93436, revenue:840926, cost:373745, margin:467181, margin_uplift:122186, proposed_index:0.04  },
+  },
+  series:[
+    {d:0,  cur:100,mu10:100,mu20:100,mu30:100},{d:5,  cur:92, mu10:92, mu20:92, mu30:92},
+    {d:10, cur:87, mu10:87, mu20:87, mu30:87}, {d:15, cur:82, mu10:82, mu20:82, mu30:82},
+    {d:20, cur:75, mu10:75, mu20:75, mu30:75}, {d:25, cur:66, mu10:66, mu20:66, mu30:66},
+    {d:30, cur:59, mu10:59, mu20:59, mu30:59}, {d:35, cur:52, mu10:52, mu20:52, mu30:52},
+    {d:40, cur:48, mu10:48, mu20:48, mu30:48}, {d:45, cur:46, mu10:46, mu20:46, mu30:46},
+    {d:50, cur:43, mu10:43, mu20:43, mu30:43}, {d:55, cur:37, mu10:37, mu20:37, mu30:37},
+    {d:60, cur:35, mu10:35, mu20:35, mu30:35}, {d:65, cur:29, mu10:32, mu20:33, mu30:34},
+    {d:70, cur:25, mu10:29, mu20:31, mu30:33}, {d:75, cur:23, mu10:26, mu20:29, mu30:32},
+    {d:80, cur:18, mu10:25, mu20:27, mu30:31}, {d:85, cur:12, mu10:22, mu20:25, mu30:30},
+    {d:90, cur:8,  mu10:16, mu20:23, mu30:29}, {d:95, cur:0,  mu10:14, mu20:21, mu30:28},
+    {d:100,cur:0,  mu10:11, mu20:19, mu30:28}, {d:105,cur:0,  mu10:9,  mu20:19, mu30:27},
+    {d:110,cur:0,  mu10:7,  mu20:16, mu30:26}, {d:115,cur:0,  mu10:5,  mu20:14, mu30:26},
+    {d:120,cur:0,  mu10:4,  mu20:11, mu30:24}, {d:125,cur:0,  mu10:3,  mu20:9,  mu30:22},
+    {d:130,cur:0,  mu10:1,  mu20:9,  mu30:21}, {d:135,cur:0,  mu10:0,  mu20:7,  mu30:20},
+    {d:140,cur:0,  mu10:0,  mu20:6,  mu30:20}, {d:145,cur:0,  mu10:0,  mu20:5,  mu30:19},
+    {d:150,cur:0,  mu10:0,  mu20:3,  mu30:17}, {d:155,cur:0,  mu10:0,  mu20:1,  mu30:16},
+    {d:160,cur:0,  mu10:0,  mu20:0,  mu30:15}, {d:165,cur:0,  mu10:0,  mu20:0,  mu30:14},
+    {d:170,cur:0,  mu10:0,  mu20:0,  mu30:13}, {d:175,cur:0,  mu10:0,  mu20:0,  mu30:12},
+    {d:180,cur:0,  mu10:0,  mu20:0,  mu30:10},
+  ]
+};
+
+const detailState = { mode:"markdown", scenarioKey:"md10" };
+function getDetailData(){ return detailState.mode==="markup"?MU_DETAIL:MD_DETAIL; }
+function getSelectedScenario(){ return getDetailData().scenarios[detailState.scenarioKey]; }
+
+// ════════════════════════════════════════════════════════════
+//  SHARED MATRIX STATS — used by both renderKpis & renderImpact
+// ════════════════════════════════════════════════════════════
+function computeMatrixStats(){
+  const {cols,rows,values}=MATRIX;
+  const zeroColIdx=cols.indexOf("0%");
+  const mdRowIdxs=rows.reduce((a,r,i)=>{if(parseInt(r,10)<0)a.push(i);return a;},[]);
+  const muRowIdxs=rows.reduce((a,r,i)=>{if(parseInt(r,10)>0)a.push(i);return a;},[]);
+  const mdColIdxs=cols.reduce((a,c,i)=>{if(parseInt(c,10)<0)a.push(i);return a;},[]);
+  const muColIdxs=cols.reduce((a,c,i)=>{if(parseInt(c,10)>0)a.push(i);return a;},[]);
+  const mdRequired = mdRowIdxs.reduce((s,ri)=>s+(+values[ri][zeroColIdx]||0),0);
+  const muRequired = muRowIdxs.reduce((s,ri)=>s+(+values[ri][zeroColIdx]||0),0);
+  const mdApplied  = mdColIdxs.reduce((s,ci)=>s+values.reduce((ss,row)=>ss+(+row[ci]||0),0),0);
+  const muApplied  = muColIdxs.reduce((s,ci)=>s+values.reduce((ss,row)=>ss+(+row[ci]||0),0),0);
+  const inventoryAtRisk = Math.round(mdRequired * 27.5 * 70);
+  const marginUpside    = Math.round(inventoryAtRisk*0.238);
+  return { mdRequired, muRequired, mdApplied, muApplied, marginUpside, inventoryAtRisk };
+}
+
+// ════════════════════════════════════════════════════════════
+//  OVERVIEW
+// ════════════════════════════════════════════════════════════
+function renderKpis(){
+  const wrap=qs("#kpiRow"); wrap.innerHTML="";
+  const {mdRequired,muRequired,marginUpside,inventoryAtRisk}=computeMatrixStats();
+  const tiles=[
+    {label:"SKUs with a markdown recommendation",                   value:mdRequired,      unit:"#"  },
+    {label:"SKUs with a markup recommendation",                     value:muRequired,      unit:"#"  },
+    {label:"Inventory at risk (€)",                                  value:inventoryAtRisk, unit:"EUR"},
+    {label:"Margin upside if recommendations implemented (€)",       value:marginUpside,    unit:"EUR"},
+  ];
+  tiles.forEach(k=>{
+    const v=k.unit==="EUR"?fmtEUR(k.value):fmtInt(k.value);
+    const el=document.createElement("div"); el.className="card";
+    el.innerHTML=`<div class="card__inner"><div class="card__label">${esc(k.label)}</div><div class="card__value">${esc(v)}</div></div>`;
+    wrap.appendChild(el);
+  });
+}
+
+function renderMatrix(){
+  const {cols,rows,values}=MATRIX;
+
+  // ── Totals ──────────────────────────────────────────────
+  const rowTotals = values.map(row => row.reduce((s,v)=>s+(+v||0),0));
+  const colTotals = cols.map((_,ci) => values.reduce((s,row)=>s+(+row[ci]||0),0));
+
+  const flat=values.flat().map(v=>+v||0);
+  const maxVal=Math.max(...flat,1);
+
+  function lerp(a,b,t){ return a+(b-a)*t; }
+  function mixColor(c1,c2,t){
+    const r=Math.round(lerp(c1[0],c2[0],t));
+    const g=Math.round(lerp(c1[1],c2[1],t));
+    const b=Math.round(lerp(c1[2],c2[2],t));
+    return `rgb(${r},${g},${b})`;
+  }
+  const neg=[214,138,154], mid=[186,191,196], pos=[106,176,180];
+
+  function bandColor(label){
+    const n=parseInt(label,10);
+    if(n===0) return `linear-gradient(90deg,${mixColor(mid,[206,211,216],0.15)},${mixColor(mid,[170,176,182],0.10)})`;
+    if(n<0){ const t=(Math.abs(n)-10)/50; return `linear-gradient(90deg,${mixColor(mid,neg,clamp(t,0,1))},${mixColor(mid,neg,clamp(t+0.12,0,1))})`; }
+    const t=(n-10)/50; return `linear-gradient(90deg,${mixColor(mid,pos,clamp(t,0,1))},${mixColor(mid,pos,clamp(t+0.12,0,1))})`;
+  }
+  function badgeTextColor(){ return "#1f3b57"; }
+
+  function rowBadge(rb){
+    return `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:28px;padding:0 8px;border-radius:0;background:${bandColor(rb)};color:${badgeTextColor()};font-size:11px;font-weight:800;white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10);">${esc(rb)}</span>`;
+  }
+  function colBadge(cb){
+    return `<span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;min-height:28px;padding:0 8px;border-radius:0;background:${bandColor(cb)};color:${badgeTextColor()};font-size:11px;font-weight:800;white-space:nowrap;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.10);">${esc(cb)}</span>`;
+  }
+  function heatFill(a){ return `linear-gradient(180deg,rgba(120,170,190,${a*0.24}),rgba(120,170,190,${a*0.12}))`; }
+
+  const tCS = `position:relative;overflow:hidden;padding:0;min-width:56px;height:28px;text-align:center;background:rgba(255,255,255,0.04);border-left:1px solid rgba(255,255,255,0.10);`;
+  const tSS = `display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:11px;font-weight:800;color:rgba(234,242,255,0.70);`;
+  const tHS = `font-size:10px;text-align:center;padding:0;min-width:56px;height:28px;background:rgba(255,255,255,0.03);border-left:1px solid rgba(255,255,255,0.10);`;
+  const tFS = `position:relative;overflow:hidden;padding:0;min-width:56px;height:28px;text-align:center;background:rgba(255,255,255,0.04);border-top:1px solid rgba(255,255,255,0.10);`;
+
+  const totalRows=rows.length+1;
+
+  let html=`<div style="overflow:auto"><table class="matrix" style="min-width:820px;border-collapse:separate;border-spacing:0;">
+    <thead>
+      <tr>
+        <th style="width:22px;padding:0;border:none">&nbsp;</th>
+        <th style="min-width:88px;padding:0">&nbsp;</th>
+        <th class="superhdr" colspan="${cols.length}">CURRENT POLICY</th>
+        <th style="${tHS}font-weight:900;color:rgba(234,242,255,0.50);font-size:9px;letter-spacing:.5px;text-transform:uppercase;">Total</th>
+      </tr>
+      <tr>
+        <th style="width:22px;padding:0;border:none">&nbsp;</th>
+        <th class="rowhdr" style="font-size:10px;padding:0;text-align:center;">Proposed</th>
+        ${cols.map(c=>`<th style="font-size:10px;text-align:center;padding:0;min-width:56px;height:28px;">${colBadge(c)}</th>`).join("")}
+        <th style="${tHS}">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>`;
+
+  rows.forEach((rb,rIdx)=>{
+    html+=`<tr>`;
+    if(rIdx===0){
+      html+=`<th rowspan="${totalRows}" style="width:22px;min-width:22px;padding:4px 2px;text-align:center;vertical-align:middle;border-right:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.02);">
+        <span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-size:9px;font-weight:900;letter-spacing:1.2px;text-transform:uppercase;color:rgba(234,242,255,0.40);">Proposed policy</span>
+      </th>`;
+    }
+    html+=`<th style="padding:0;min-width:88px;height:28px;border-right:1px solid rgba(255,255,255,0.04);">${rowBadge(rb)}</th>`;
+    values[rIdx].forEach((v,cIdx)=>{
+      const n=+v||0;
+      const isCenter=rows[rIdx]==="0%"&&cols[cIdx]==="0%";
+      const a=isCenter?0:clamp(n/maxVal,0,1);
+      html+=`<td style="position:relative;overflow:hidden;padding:0;min-width:56px;height:28px;text-align:center;background:${heatFill(a)};">
+        <span style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-size:11px;font-weight:600;color:#EAF2FF;">${n>0?fmtInt(n):""}</span>
+      </td>`;
+    });
+    html+=`<td style="${tCS}"><span style="${tSS}">${rowTotals[rIdx]>0?fmtInt(rowTotals[rIdx]):""}</span></td>`;
+    html+=`</tr>`;
+    if(rb==="0%"){
+      html+=`<tr><td colspan="${cols.length+3}" style="height:3px;background:rgba(255,255,255,0.07);padding:0;border:none"></td></tr>`;
+    }
+  });
+
+  html+=`<tr>
+    <td style="height:28px;padding:0;border-top:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.02);"></td>
+    <td style="height:28px;padding:0 8px;border-top:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.02);font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.5px;color:rgba(234,242,255,0.40);text-align:center;vertical-align:middle;">Total</td>
+    ${colTotals.map(t=>`<td style="${tFS}"><span style="${tSS}">${t>0?fmtInt(t):""}</span></td>`).join("")}
+    <td style="${tFS}"></td>
+  </tr>`;
+
+  html+=`</tbody></table></div>`;
+  qs("#matrixWrap").innerHTML=html;
+}
+
+function renderImpact(){
+  const wrap=qs("#impactTiles"); wrap.innerHTML="";
+  const {mdApplied,mdRequired,muApplied,muRequired}=computeMatrixStats();
+  const tiles=[
+    {label:"Current Season Day",  value: 60 },
+    {label:"SKUs with markdown applied",  value:Math.round(mdApplied) },
+    {label:"SKUs with markup applied",     value:Math.round(muApplied) },
+
+  ];
+  tiles.forEach(t=>{
+    const el=document.createElement("div"); el.className="impact-tile";
+    el.innerHTML=`<div class="impact-tile__label">${esc(t.label)}</div><div class="impact-tile__value">${fmtInt(t.value)}</div>`;
+    wrap.appendChild(el);
+  });
+}
+
+function renderMarkupTable(){
+  const tbl = qs("#markupTable");
+  const rotMin = Math.min(...MARKUP_LIST.map(r => r.rot || 0));
+  const rotMax = Math.max(...MARKUP_LIST.map(r => r.rot || 0), 1);
+  const revMax = Math.max(...MARKUP_LIST.map(r => r.rev_uplift || 0), 1);
+  const marginMax = Math.max(...MARKUP_LIST.map(r => r.margin_up || 0), 1);
+  const cols = [
+    { key:"name",        th:`<div class="thWrap"><div class="thTop">Name</div></div>`, align:"" },
+    { key:"sku",         th:`<div class="thWrap"><div class="thTop">SKU</div></div>`, align:"" },
+    { key:"curr",        th:`<div class="thWrap"><div class="thTop">Initial (€)</div></div>`, align:"num", fmt:fmtEUR },
+    { key:"comp",        th:`<div class="thWrap"><div class="thTop">Competitor (€)</div></div>`, align:"num", fmt:fmtEUR },
+    { key:"pct_comp",    th:`<div class="thWrap"><div class="thTop">Price vs competitor (%)</div></div>`, align:"num", fmt:fmtPct },
+    { key:"rot",         th:`<div class="thWrap"><div class="thTop">Rotation vs Forecast</div></div>`, align:"num", fmt:fmtPctFromMult, cell:"markupRotCell", min:rotMin, max:rotMax },
+    { key:"reco",        th:`<div class="thWrap"><div class="thTop">Policy</div></div>`, align:"", fmt:formatRecoChip },
+    { key:"final_price", th:`<div class="thWrap"><div class="thTop">Final (€)</div></div>`, align:"num", fmt:fmtEUR },
+    { key:"rev_uplift",  th:`<div class="thWrap"><div class="thTop">Revenue Uplift (€)</div></div>`, align:"num", fmt:fmtEUR, cell:"upsideCell", max:revMax },
+    { key:"margin_up",   th:`<div class="thWrap"><div class="thTop">Margin Uplift (€)</div></div>`, align:"num", fmt:fmtEUR, cell:"upsideCell", max:marginMax },
+  ];
+  tbl.innerHTML = `
+    <thead><tr>${cols.map(c=>`<th class="${c.align||""}">${c.th}</th>`).join("")}</tr></thead>
+    <tbody>${MARKUP_LIST.map(r=>`
+      <tr data-sku="${esc(r.sku)}" data-type="markup">
+        ${cols.map(c=>{
+          const v=r[c.key], out=c.fmt?c.fmt(v):esc(v??"—");
+          if(c.cell==="markupRotCell"){ const i=clamp(((+v||0)-(c.min||0))/(((c.max||1)-(c.min||0))||1),0,1); return`<td class="${c.align||""} markupRotCell" style="--i:${i.toFixed(3)}">${out}</td>`; }
+          if(c.cell){ const i=clamp((+v||0)/(c.max||1),0,1); return`<td class="${c.align||""} ${c.cell}" style="--i:${i.toFixed(3)}">${out}</td>`; }
+          return`<td class="${c.align||""}">${out}</td>`;
+        }).join("")}
+      </tr>`).join("")}
+    </tbody>`;
+  tbl.querySelector("tbody").onclick=e=>{const tr=e.target.closest("tr[data-sku]");if(!tr)return;openDetail(tr.dataset.sku,"markup");};
+}
+
+function renderMarkdownTable(){
+  const tbl = qs("#markdownTable");
+  const riskMax = Math.max(...MARKDOWN_LIST.map(r => r.inv_risk_pct || 0), 1);
+  const upliftMax = Math.max(...MARKDOWN_LIST.map(r => r.uplift || 0), 1);
+  const revMax = Math.max(...MARKDOWN_LIST.map(r => r.rev_uplift || 0), 1);
+  const marginMax = Math.max(...MARKDOWN_LIST.map(r => r.margin_up || 0), 1);
+  const cols = [
+    { key:"name",         th:`<div class="thWrap"><div class="thTop">Name</div></div>`, align:"" },
+    { key:"sku",          th:`<div class="thWrap"><div class="thTop">SKU</div></div>`, align:"" },
+    { key:"curr",         th:`<div class="thWrap"><div class="thTop">Initial (€)</div></div>`, align:"num", fmt:fmtEUR },
+    { key:"comp",         th:`<div class="thWrap"><div class="thTop">Competitor (€)</div></div>`, align:"num", fmt:fmtEUR },
+    { key:"pct_comp",     th:`<div class="thWrap"><div class="thTop">Price vs Competitor (%)</div></div>`, align:"num", fmt:fmtPct },
+    { key:"inv_risk_pct", th:`<div class="thWrap"><div class="thTop">Inventory at risk</div></div>`, align:"num", fmt:fmtPct, cell:"riskCell", max:riskMax },
+    { key:"reco",         th:`<div class="thWrap"><div class="thTop">Policy</div></div>`, align:"", fmt:formatRecoChip },
+    { key:"final_price",  th:`<div class="thWrap"><div class="thTop">Final (€)</div></div>`, align:"num", fmt:fmtEUR },
+    { key:"uplift",       th:`<div class="thWrap"><div class="thTop">Uplift</div></div>`, align:"num", fmt:fmtPct, cell:"upsideCell", max:upliftMax },
+    { key:"obsolete",     th:`<div class="thWrap"><div class="thTop">Obsolet Post</div></div>`, align:"num", fmt:fmtPct },
+    { key:"rev_uplift",   th:`<div class="thWrap"><div class="thTop">Revenue Uplift (€)</div></div>`, align:"num", fmt:fmtEUR, cell:"upsideCell", max:revMax },
+    { key:"margin_up",    th:`<div class="thWrap"><div class="thTop">Margin Uplift (€)</div></div>`, align:"num", fmt:fmtEUR, cell:"upsideCell", max:marginMax },
+  ];
+  tbl.innerHTML = `
+    <thead><tr>${cols.map(c=>`<th class="${c.align||""}">${c.th}</th>`).join("")}</tr></thead>
+    <tbody>${MARKDOWN_LIST.map(r=>`
+      <tr data-sku="${esc(r.sku)}" data-type="markdown">
+        ${cols.map(c=>{
+          const v=r[c.key], out=c.fmt?c.fmt(v):esc(v??"—");
+          if(c.cell){ const i=clamp((+v||0)/(c.max||1),0,1); return`<td class="${c.align||""} ${c.cell}" style="--i:${i.toFixed(3)}">${out}</td>`; }
+          return`<td class="${c.align||""}">${out}</td>`;
+        }).join("")}
+      </tr>`).join("")}
+    </tbody>`;
+  tbl.querySelector("tbody").onclick=e=>{const tr=e.target.closest("tr[data-sku]");if(!tr)return;openDetail(tr.dataset.sku,"markdown");};
+}
+
+// ════════════════════════════════════════════════════════════
+//  PRODUCT LIST
+// ════════════════════════════════════════════════════════════
+const ALL = [
+  ...MARKUP_LIST.map(p => ({ ...p, type:"markup" })),
+  ...MARKDOWN_LIST.map(p => ({ ...p, type:"markdown" }))
+];
+const state = { category:"", search:"" };
+
+function renderProductList(){
+  const rows=ALL;
+  const selType=qs("#fType"), inp=qs("#fSearch");
+  if(selType) selType.value=state.category;
+
+  const apply=()=>{
+    const filtered=rows.filter(r=>{
+      if(state.category&&r.type!==state.category)return false;
+      if(state.search){const s=state.search.toLowerCase(),hay=`${r.sku} ${r.name}`.toLowerCase();if(!hay.includes(s))return false;}
+      return true;
+    });
+    const table=qs("#productsTable");
+    const marginMax=Math.max(...filtered.map(r=>Number(r.margin_up)||0),1);
+    const cols=[
+      {key:"sku",label:"SKU",align:""},
+      {key:"name",label:"Name",align:""},
+      {key:"type",label:"Type",align:""},
+      {key:"reco",label:"Recommendation",align:"",fmt:formatRecoChip},
+      {key:"curr",label:"Current price (€)",align:"num",fmt:fmtEUR},
+      {key:"final_price",label:"Final price (€)",align:"num",fmt:fmtEUR},
+      {key:"margin_up",label:"Margin upside (€)",align:"num",fmt:fmtEUR,cellClass:"upsideCell",max:marginMax},
+    ];
+    table.innerHTML=`
+      <thead><tr>${cols.map(c=>`<th class="${c.align||""}">${esc(c.label)}</th>`).join("")}</tr></thead>
+      <tbody>${filtered.map(r=>`
+        <tr data-sku="${esc(r.sku)}" data-type="${esc(r.type)}">
+          ${cols.map(c=>{
+            const val=r[c.key],out=c.fmt?c.fmt(val):esc(val??"—");
+            if(c.cellClass){const n=Number(val)||0,frac=clamp(n/(c.max||1),0,1);return`<td class="${c.align||""} ${c.cellClass}" style="--i:${frac.toFixed(4)}">${out}</td>`;}
+            if(c.key==="type")return`<td><span class="pill"><span class="dot"></span>${esc(val)}</span></td>`;
+            return`<td class="${c.align||""}">${out}</td>`;
+          }).join("")}
+        </tr>`).join("")}
+      </tbody>`;
+    qs("#productsMeta").textContent=`${filtered.length} of ${rows.length} products shown.`;
+    table.querySelector("tbody").onclick=e=>{const tr=e.target.closest("tr[data-sku]");if(!tr)return;openDetail(tr.dataset.sku,tr.dataset.type);};
+  };
+
+  if(selType) selType.onchange=e=>{state.category=e.target.value;apply();};
+  if(inp) inp.oninput=e=>{state.search=e.target.value.trim();apply();};
+  apply();
+}
+
+// ════════════════════════════════════════════════════════════
+//  PRODUCT DETAIL
+// ════════════════════════════════════════════════════════════
+function openDetail(sku,type){
+  detailState.mode=type==="markup"?"markup":"markdown";
+  detailState.scenarioKey=type==="markup"?"mu10":"md10";
+  qs('.tab[data-tab="detail"]')?.setAttribute("aria-disabled","false");
+  switchToTab("detail");
+  renderProductDetail();
+}
+
+function renderProductDetail(){
+  const d=getDetailData(), sel=getSelectedScenario(), mount=qs("#productDetailMount");
+  const fmtIdx=x=>`${x>=0?"+":""}${(x*100).toFixed(1)}%`;
+  mount.innerHTML=`
+    <div class="detailShell">
+      <div class="detailHeaderLarge detailHeaderLarge--kpi">
+        <div class="detailTopBar">
+          <div class="detailTopBarLeft">
+            <button id="btnBackInline" class="detailBackBtn" type="button">← Back to products</button>
+            <div class="detailProductName">${esc(d.name)}</div>
+          </div>
+          <div class="detailScenarioRight">
+            <div class="detailScenarioPill">
+              <div class="detailScenarioPill__label">Scenario</div>
+              <select id="detailScenarioSelect" class="detailScenarioPill__select">
+                ${Object.entries(d.scenarios).map(([k,v])=>`<option value="${k}"${k===detailState.scenarioKey?" selected":""}>${esc(v.label)}</option>`).join("")}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="detailHeroStats">
+          <div class="heroStat heroStat--elasticity">
+            <div class="heroStat__label">Elasticity</div>
+            <div class="heroStat__big heroStat__big--purple">${esc(d.elasticity)}</div>
+          </div>
+          <div class="heroDivider"></div>
+          <div class="heroStat heroStat--sku">
+            <div class="heroStat__label">SKU</div>
+            <div class="heroStat__big">${esc(d.sku)}</div>
+            <div class="heroStat__sub">Current price: <span class="heroStat__price">${fmtEUR(d.curr_price)}</span></div>
+          </div>
+          <div class="heroDivider"></div>
+          <div class="heroStat heroStat--current">
+            <div class="heroStat__label">Current price vs competitor</div>
+            <div class="heroStat__big" style="color:rgba(234,242,255,0.85)">${fmtIdx(d.curr_index_vs_comp)}</div>
+            <div class="heroStat__sub">Competitor price: ${fmtEUR(d.comp_price)}</div>
+          </div>
+          <div class="heroDivider"></div>
+          <div class="heroStat heroStat--proposed">
+            <div class="heroStat__label">Proposed price vs competitor</div>
+            <div class="heroStat__big" style="color:#7aa2ff">${fmtIdx(sel.proposed_index)}</div>
+            <div class="heroStat__sub">Proposed price: ${fmtEUR(sel.price)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="detailGrid2">
+        <div class="detailCard">
+          <div class="detailCardHead">
+            <div class="detailCardTitle">Inventory Evolution <span class="muted">(% remaining · days 0–180)</span></div>
+          </div>
+          <div class="detailCardBody">
+            <div id="detailChart" class="chartWrap"></div>
+            <div class="chartLegend">
+              <div class="legendItem"><span class="legendSwatch cur"></span>Current scenario</div>
+              <div class="legendItem"><span class="legendSwatch sel"></span>${esc(sel.label)}</div>
+            </div>
+          </div>
+        </div>
+        <div class="detailCard">
+          <div class="detailCardHead"><div class="detailCardTitle">Scenario Comparison · End of Season</div></div>
+          <div class="detailCardBody" id="detailScenario"></div>
+        </div>
+      </div>
+    </div>`;
+  qs("#detailScenarioSelect").onchange=e=>{detailState.scenarioKey=e.target.value;renderProductDetail();};
+  qs("#btnBackInline")?.addEventListener("click",()=>switchToTab("products"));
+  renderScenarioTable();
+  renderDetailChart();
+}
+
+function renderScenarioTable(){
+  const wrap=qs("#detailScenario"); if(!wrap)return;
+  const d=getDetailData(), cur=d.scenarioCurrent, sel=getSelectedScenario();
+  const rows=[
+    ["Obsolete inv. (units)",fmtInt(cur.inv_units),fmtInt(sel.inv_units)],
+    ["Obsolete inv. (€)",    fmtEUR(cur.inv_eur),  fmtEUR(sel.inv_eur)],
+    ["Revenue (€)",          fmtEUR(cur.revenue),  fmtEUR(sel.revenue)],
+    ["Cost (€)",             fmtEUR(cur.cost),      fmtEUR(sel.cost)],
+    ["Margin (€)",           fmtEUR(cur.margin),    fmtEUR(sel.margin)],
+  ];
+  wrap.innerHTML=`
+    <div style="font-size:11px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;color:rgba(234,242,255,0.60);">End of season metrics</div>
+    <table class="detailTbl">
+      <thead><tr><th>Metric</th><th class="num">Current</th><th class="num">${esc(sel.label)}</th></tr></thead>
+      <tbody>${rows.map(([l,c,s])=>`<tr><th>${esc(l)}</th><td class="num">${c}</td><td class="num">${s}</td></tr>`).join("")}</tbody>
+    </table>
+    <div class="detailKpiRow">
+      <div class="detailKpiLabel">Incremental margin</div>
+      <div class="detailKpiVal" style="color:${sel.margin_uplift>=0?"var(--accent)":"#FF7070"}">${fmtEUR(sel.margin_uplift)}</div>
+    </div>`;
+}
+
+function renderDetailChart(){
+  const wrap=qs("#detailChart"); if(!wrap)return;
+  const d=getDetailData(), key=detailState.scenarioKey;
+  const W=980,H=360,pad={l:52,r:16,t:14,b:32};
+  const toX=day=>pad.l+(day/180)*(W-pad.l-pad.r);
+  const toY=v=>pad.t+(1-v/100)*(H-pad.t-pad.b);
+  function path(field){
+    const pts=[];
+    for(const p of d.series){const v=p[field];if(v==null||isNaN(v))continue;pts.push(p);if(v===0)break;}
+    if(!pts.length)return"";
+    return pts.map((p,i)=>`${i?"L":"M"}${toX(p.d).toFixed(1)} ${toY(p[field]).toFixed(1)}`).join(" ");
+  }
+  const xTicks=[0,30,60,90,120,150,180], yTicks=[0,25,50,75,100];
+  const grid=[
+    ...xTicks.map(x=>`<line class="chartGrid" x1="${toX(x)}" y1="${pad.t}" x2="${toX(x)}" y2="${H-pad.b}"/>`),
+    ...yTicks.map(y=>`<line class="chartGrid" x1="${pad.l}" y1="${toY(y)}" x2="${W-pad.r}" y2="${toY(y)}"/>`)
+  ].join("");
+  const xL=xTicks.map(x=>`<text class="chartAxisText" x="${toX(x)}" y="${H-8}" text-anchor="middle">${x}</text>`).join("");
+  const yL=yTicks.map(y=>`<text class="chartAxisText" x="${pad.l-8}" y="${toY(y)+4}" text-anchor="end">${y}%</text>`).join("");
+  const x60=toX(60);
+  const marker=`<line x1="${x60}" y1="${pad.t}" x2="${x60}" y2="${H-pad.b}" stroke="rgba(255,255,255,0.20)" stroke-width="1" stroke-dasharray="4 3"/>
+    <text x="${x60+4}" y="${pad.t+14}" font-size="10" fill="rgba(234,242,255,0.50)" font-weight="700">Day 60</text>`;
+  const pCur=path("cur"), pSel=path(key);
+  wrap.innerHTML=`<svg class="chartSvg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Inventory evolution">
+    ${grid}${marker}${yL}${xL}
+    ${pCur?`<path class="chartLineCur" d="${pCur}"/>`:""}
+    ${pSel?`<path class="chartLineSel" d="${pSel}"/>`:""}
+  </svg>`;
+}
+
+// ── Tabs / Boot ───────────────────────────────────────────
+function switchToTab(key){
+  qsa(".tab").forEach(b=>b.classList.remove("is-active"));
+  qsa(".tabpane").forEach(p=>p.classList.remove("is-active"));
+  qs(`.tab[data-tab="${key}"]`)?.classList.add("is-active");
+  qs(`#tab-${key}`)?.classList.add("is-active");
+}
+
+function bindTabs(){
+  qsa(".tab").forEach(btn=>btn.addEventListener("click",()=>{
+    if(btn.dataset.tab==="detail"&&btn.getAttribute("aria-disabled")==="true")return;
+    qsa(".tab").forEach(b=>b.classList.remove("is-active")); btn.classList.add("is-active");
+    qsa(".tabpane").forEach(p=>p.classList.remove("is-active"));
+    qs(`#tab-${btn.dataset.tab}`)?.classList.add("is-active");
+  }));
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  bindTabs();
+  qs('.tab[data-tab="detail"]')?.setAttribute("aria-disabled","true");
+  qs("#btnDetailBack")?.addEventListener("click",()=>switchToTab("products"));
+  qs("#btnDetailClose")?.addEventListener("click",()=>switchToTab("products"));
+  qs("#btnReset")?.addEventListener("click",()=>{
+    state.category=""; state.search="";
+    if(qs("#fType"))qs("#fType").value="";
+    if(qs("#fSearch"))qs("#fSearch").value="";
+    qs('.tab[data-tab="detail"]')?.setAttribute("aria-disabled","true");
+    switchToTab("overview");
+    renderProductList();
+  });
+  renderKpis();
+  renderMatrix();
+  renderImpact();
+  renderMarkupTable();
+  renderMarkdownTable();
+  renderProductList();
+});
+
+
+</script>
+</body>
+</html>
